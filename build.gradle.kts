@@ -25,9 +25,14 @@ repositories {
   maven("https://jitpack.io")  // MixinExtras, Fabric ASM
   maven("https://maven.jamieswhiteshirt.com/libs-release")  // Reach Entity Attributes
   maven("https://mvn.devos.one/snapshots/")  // Create Fabric
+  maven("https://mvn.devos.one/releases/")
   maven("https://api.modrinth.com/maven")  // LazyDFU
   maven("https://maven.tterrag.com/")  // Flywheel
   maven("https://www.cursemaven.com")  // Forge Config API Port
+  maven("https://maven.createmod.net/")
+  maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven")
+  maven("https://maven.jamieswhiteshirt.com/libs-release")
+  maven("https://modmaven.dev/")
 }
 
 val shadowDep: Configuration by configurations.creating
