@@ -17,8 +17,11 @@ import de.mrjulsen.crn.data.CarriageData
 import de.mrjulsen.crn.data.TrainInfo
 import de.mrjulsen.crn.data.TrainLine
 import de.mrjulsen.crn.data.navigation.ClientRoutePart
+import de.mrjulsen.crn.data.train.PredictionTimes
 import de.mrjulsen.crn.data.train.ScheduleSection
 import de.mrjulsen.crn.data.train.TrainData
+import de.mrjulsen.crn.data.train.TrainListener
+import de.mrjulsen.crn.data.train.portable.BasicTrainDisplayData
 import de.mrjulsen.crn.data.train.portable.TrainDisplayData
 import java.util.UUID
 import javax.lang.model.type.NullType
@@ -93,8 +96,8 @@ val Train.sendable
       name = name.string,
       owner = null,
       cars = carriages.map { it.sendable }.toList(),
-      backwards = speed < 0,
-      backwardsBeforeStop = if (this.speedBeforeStall == null) null else this.speedBeforeStall < 0,
+      backwards = currentlyBackwards,
       stopped = speed == 0.0,
-      line = "",
+      line = TrainListener.getTrainData(this).orElseThrow().currentSection.getTrainLine().map { x -> x.lineName }.orElse("nincs :("),
+      color = (BasicTrainDisplayData.of(id).color + 16777216).toString(16),
     )
