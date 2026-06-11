@@ -41,6 +41,9 @@ class Server {
     "stations" to LayerConfig(label = "Stations"),
     "trains" to LayerConfig(label = "Trains"),
   )
+  var lines = mapOf(
+    "test" to "#FF0000",
+  )
 
   private var server: CIOApplicationEngine? = null
 
@@ -106,7 +109,7 @@ class Server {
 
   private val mapConfig: MapConfig
     get() =
-      MapConfig(mapView, dimensions, layers)
+      MapConfig(mapView, dimensions, layers, lines)
 
   private fun Application.module() {
     routing {

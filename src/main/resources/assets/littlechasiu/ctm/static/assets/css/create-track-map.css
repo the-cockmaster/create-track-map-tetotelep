@@ -75,8 +75,10 @@ body {
 .train.lead-car {
   stroke: var(--lead-car-color);
 }
-.head-icon path {
-  fill: var(--lead-car-color);
+
+.tramicon {
+    width: 24px;
+    height: auto;
 }
 
 .coords-control {

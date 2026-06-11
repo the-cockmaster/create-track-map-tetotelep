@@ -13,7 +13,7 @@ map.createPane("stations")
 map.getPane("tracks").style.zIndex = 300
 map.getPane("blocks").style.zIndex = 500
 map.getPane("signals").style.zIndex = 600
-map.getPane("trains").style.zIndex = 700
+map.getPane("trains").style.zIndex = 900
 map.getPane("portals").style.zIndex = 800
 map.getPane("stations").style.zIndex = 800
 
@@ -28,7 +28,7 @@ let leftSide = false
 fetch("api/config.json")
   .then((resp) => resp.json())
   .then((cfg) => {
-    const { layers, view, dimensions } = cfg
+    const { layers, view, dimensions, lines } = cfg
     const {
       initial_dimension,
       initial_position,
@@ -56,6 +56,10 @@ fetch("api/config.json")
     leftSide = signals_on === "LEFT"
 
     L.control.coords().addTo(map)
+
+    const localLines = new Map(Object.entries(lines))
+    console.log(typeof localLines)
+    console.log(localLines["test"])
 
     startMapUpdates()
   })
@@ -88,7 +92,7 @@ function startMapUpdates() {
 
     stations.forEach((stn) => {
       L.marker(xz(stn.location), {
-        icon: stationIcon,
+        icon: stationIcon("#5E6167"),
         rotationAngle: stn.angle,
         pane: "stations",
       })
@@ -175,19 +179,20 @@ function startMapUpdates() {
     })
   })
 
+  let tran = new Map()
+
   dmgr.onTrainStatus(({ trains }) => {
     lmgr.clearTrains()
     tmgr.update(trains)
 
     trains.forEach((train) => {
-      let leadCar = null
       if (!train.stopped) {
         if (train.backwards) {
-          leadCar = train.cars.length - 1
-        } else {
-          leadCar = 0
+            tran.set(train.id, train.cars.length - 1)
+          } else {
+            tran.set(train.id, 0)
+          }
         }
-      }
 
       train.cars.forEach((car, i) => {
         let parts = car.portal
@@ -197,37 +202,41 @@ function startMapUpdates() {
             ]
           : [[car.leading.dimension, [xz(car.leading.location), xz(car.trailing.location)]]]
 
-        parts.map(([dim, part]) =>
-          L.polyline(part, {
-            weight: 12,
-            lineCap: "square",
-            className: "train" + (leadCar === i ? " lead-car" : ""),
-            pane: "trains",
-          })
-            .bindTooltip(
-              train.cars.length === 1
-                ? train.name
-                : `${train.name} <span class="car-number">${i + 1}</span>`,
-              {
-                className: "train-name",
-                direction: "right",
-                offset: L.point(12, 0),
-                opacity: 0.7,
-              }
-            )
-            .addTo(lmgr.layer(dim, "trains"))
-        )
-
-        if (leadCar === i) {
-          let [dim, edge] = train.backwards ? parts[parts.length - 1] : parts[0]
-          let [head, tail] = train.backwards ? [edge[1], edge[0]] : [edge[0], edge[1]]
+        if (tran.get(train.id) === i) {
+          let [dim, edge] = tran.get(train.id) == train.cars.length - 1 ? parts[parts.length - 1] : parts[0]
+          let [head, tail] = tran.get(train.id) == train.cars.length - 1 ? [edge[1], edge[0]] : [edge[0], edge[1]]
           let angle = 180 + (Math.atan2(tail[0] - head[0], tail[1] - head[1]) * 180) / Math.PI
 
-          L.marker(head, {
-            icon: headIcon,
-            rotationAngle: angle,
-            pane: "trains",
-          }).addTo(lmgr.layer(dim, "trains"))
+          /*
+          if(train.name == "TestTram"){
+            L.marker(head, {
+                icon: tramIcon,
+                rotationAngle: 0,
+                pane: "trains",
+            }).addTo(lmgr.layer(dim, "trains"))
+          } else {
+
+          }
+          */
+          if(train.name == "TestTram"){
+            L.marker(head, {
+              icon: tramIcon,
+              rotationAngle: 0,
+              pane: "trains",
+            }).bindTooltip(train.name, {className: "train-name", direction: "up"}).addTo(lmgr.layer(dim, "trains"))
+          } else if(train.name == "RedTrain") {
+            L.marker(head, {
+              icon: trainIcon("#E5231B"),
+              rotationAngle: 0,
+              pane: "trains",
+            }).bindTooltip(train.name, {className: "train-name", direction: "up"}).addTo(lmgr.layer(dim, "trains"))
+          } else if(train.name == "TestMetro") {
+            L.marker(head, {
+              icon: metroIcon,
+              rotationAngle: 0,
+              pane: "trains",
+            }).bindTooltip(train.name, {className: "train-name"}).addTo(lmgr.layer(dim, "trains"))
+          }
         }
       })
     })

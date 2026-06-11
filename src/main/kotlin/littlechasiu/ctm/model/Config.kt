@@ -127,6 +127,7 @@ data class MapConfig(
   val view: MapView,
   val dimensions: Map<String, DimensionConfig>,
   val layers: Map<String, LayerConfig>,
+  val lines: Map<String, String>,
 )
 
 @Serializable
@@ -162,4 +163,7 @@ data class Config @OptIn(ExperimentalSerializationApi::class) constructor(
     "stations" to LayerConfig(label = "Stations"),
     "trains" to LayerConfig(label = "Trains"),
   ),
+  val lines: Map<String, String> = mapOf(
+    "test" to "#FF0000",
+  )
 )
