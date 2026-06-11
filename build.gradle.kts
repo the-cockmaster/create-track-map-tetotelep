@@ -14,6 +14,9 @@ val minecraft_version: String by project
 val maven_group: String by project
 val archives_base_name: String by project
 val create_version_short: String by project
+val crn_version: String by project
+val dragonlib_version: String by project
+val architectury_api_version: String by project
 
 version = mod_version
 group = maven_group
@@ -33,6 +36,12 @@ repositories {
   maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven")
   maven("https://maven.jamieswhiteshirt.com/libs-release")
   maven("https://modmaven.dev/")
+  maven("https://maven.mrjulsen.net")
+  maven("https://maven.architectury.dev")
+  mavenLocal()
+  flatDir {
+    dirs("crn-local")
+  }
 }
 
 val shadowDep: Configuration by configurations.creating
@@ -56,7 +65,11 @@ dependencies {
   modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
 
   modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:$create_version+mc$minecraft_version")
-  modImplementation("io.github.fabricators_of_create.Porting-Lib:Porting-Lib:$porting_lib_version")
+  //modImplementation("io.github.fabricators_of_create.Porting-Lib:Porting-Lib:$porting_lib_version")
+
+  modImplementation("de.mrjulsen.crn:createrailwaysnavigator-fabric:${minecraft_version}-${crn_version}")
+  modImplementation("de.mrjulsen.mcdragonlib:dragonlib-fabric-${minecraft_version}-${dragonlib_version}")
+  modImplementation("dev.architectury:architectury-fabric:${architectury_api_version}")
 
   shadowDep("io.ktor:ktor-server-core-jvm:$ktor_version")
   shadowDep("io.ktor:ktor-server-cio-jvm:$ktor_version")

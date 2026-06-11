@@ -6,11 +6,22 @@ import com.simibubi.create.content.trains.entity.TravellingPoint
 import com.simibubi.create.content.trains.graph.TrackEdge
 import com.simibubi.create.content.trains.graph.TrackNode
 import com.simibubi.create.content.trains.graph.TrackNodeLocation
+import com.simibubi.create.content.trains.schedule.Schedule
 import com.simibubi.create.foundation.utility.Couple
 import littlechasiu.ctm.model.*
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import de.mrjulsen.crn.*
+import de.mrjulsen.crn.data.CarriageData
+import de.mrjulsen.crn.data.TrainInfo
+import de.mrjulsen.crn.data.TrainLine
+import de.mrjulsen.crn.data.navigation.ClientRoutePart
+import de.mrjulsen.crn.data.train.ScheduleSection
+import de.mrjulsen.crn.data.train.TrainData
+import de.mrjulsen.crn.data.train.portable.TrainDisplayData
+import java.util.UUID
+import javax.lang.model.type.NullType
 
 fun <T> MutableSet<T>.replaceWith(other: Collection<T>) {
   this.retainAll { other.contains(it) }
@@ -83,5 +94,7 @@ val Train.sendable
       owner = null,
       cars = carriages.map { it.sendable }.toList(),
       backwards = speed < 0,
+      backwardsBeforeStop = if (this.speedBeforeStall == null) null else this.speedBeforeStall < 0,
       stopped = speed == 0.0,
+      line = "",
     )
