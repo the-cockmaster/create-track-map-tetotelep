@@ -57,10 +57,6 @@ fetch("api/config.json")
 
     L.control.coords().addTo(map)
 
-    const localLines = new Map(Object.entries(lines))
-    console.log(typeof localLines)
-    console.log(localLines["test"])
-
     startMapUpdates()
   })
 
@@ -179,20 +175,16 @@ function startMapUpdates() {
     })
   })
 
-  let tran = new Map()
-
   dmgr.onTrainStatus(({ trains }) => {
     lmgr.clearTrains()
     tmgr.update(trains)
 
     trains.forEach((train) => {
-      if (!train.stopped) {
-        if (train.backwards) {
-            tran.set(train.id, train.cars.length - 1)
-          } else {
-            tran.set(train.id, 0)
-          }
-        }
+      if (train.backwards) {
+        leadCar = train.cars.length - 1
+      } else {
+        leadCar = 0
+      }
 
       train.cars.forEach((car, i) => {
         let parts = car.portal
@@ -202,9 +194,9 @@ function startMapUpdates() {
             ]
           : [[car.leading.dimension, [xz(car.leading.location), xz(car.trailing.location)]]]
 
-        if (tran.get(train.id) === i) {
-          let [dim, edge] = tran.get(train.id) == train.cars.length - 1 ? parts[parts.length - 1] : parts[0]
-          let [head, tail] = tran.get(train.id) == train.cars.length - 1 ? [edge[1], edge[0]] : [edge[0], edge[1]]
+        if (leadCar === i) {
+          let [dim, edge] = train.backwards ? parts[parts.length - 1] : parts[0]
+          let [head, tail] = train.backwards ? [edge[1], edge[0]] : [edge[0], edge[1]]
           let angle = 180 + (Math.atan2(tail[0] - head[0], tail[1] - head[1]) * 180) / Math.PI
 
           /*
@@ -218,24 +210,30 @@ function startMapUpdates() {
 
           }
           */
-          if(train.name == "TestTram"){
+          if(train.category == "Villamos"){
             L.marker(head, {
               icon: tramIcon,
               rotationAngle: 0,
               pane: "trains",
-            }).bindTooltip(train.name, {className: "train-name", direction: "up"}).addTo(lmgr.layer(dim, "trains"))
-          } else if(train.name == "RedTrain") {
-            L.marker(head, {
-              icon: trainIcon("#E5231B"),
-              rotationAngle: 0,
-              pane: "trains",
-            }).bindTooltip(train.name, {className: "train-name", direction: "up"}).addTo(lmgr.layer(dim, "trains"))
-          } else if(train.name == "TestMetro") {
+            }).bindTooltip(`<span class="line-number" style="background-color:${train.color}">${train.line}</span> <span class="nofont">▶</span> <span class="moveup">${train.terminus}</span> <br><span class="train-name-text">${train.name}</span>`, {className: "train-name", direction: "top", offset: L.point(0,-12)}).addTo(lmgr.layer(dim, "trains"))
+          } else if(train.category == "Metró") {
             L.marker(head, {
               icon: metroIcon,
               rotationAngle: 0,
               pane: "trains",
-            }).bindTooltip(train.name, {className: "train-name"}).addTo(lmgr.layer(dim, "trains"))
+            }).bindTooltip(`<span class="line-number" style="background-color:${train.color}">${train.line}</span> <span class="nofont">▶</span> <span class="moveup">${train.terminus}</span> <br><span class="train-name-text">${train.name}</span>`, {className: "train-name", direction: "top", offset: L.point(0,-12)}).addTo(lmgr.layer(dim, "trains"))
+          } else if(train.category == "Vasút") {
+            L.marker(head, {
+              icon: trainIcon(train.color),
+              rotationAngle: 0,
+              pane: "trains",
+            }).bindTooltip(`<span class="line-number" style="background-color:${train.color}">${train.line}</span> <span class="nofont">▶</span> <span class="moveup">${train.terminus}</span> <br><span class="train-name-text">${train.name}</span>`, {className: "train-name", direction: "top", offset: L.point(0,-12)}).addTo(lmgr.layer(dim, "trains"))
+          } else {
+            L.marker(head, {
+              icon: trainIcon("#5E6167"),
+              rotationAngle: 0,
+              pane: "trains",
+            }).bindTooltip(`<span class="moveup">${train.name}</span> <br><span class="train-name-text">A jármű nem teljesít menetrendi menetet</span>`, {className: "train-name", direction: "top", offset: L.point(0,-12)}).addTo(lmgr.layer(dim, "trains"))
           }
         }
       })

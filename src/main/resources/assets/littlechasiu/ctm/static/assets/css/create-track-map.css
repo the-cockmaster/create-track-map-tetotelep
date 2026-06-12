@@ -16,6 +16,15 @@ body {
   background-color: var(--map-background);
 }
 
+.open-sans-class {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
 .track.occupied {
   stroke: var(--track-occupied);
 }
@@ -28,18 +37,35 @@ body {
 
 .train-name,
 .station-name {
-  font-family: var(--ui-font);
-  font-weight: bold;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
   font-size: 15px;
+  padding-top: 8px;
+  padding-right: 10px;
+  padding-left: 8px;
+}
+.moveup {
+  position: relative;
+  bottom: 0.8px;
 }
 .station-name .track-number,
-.train-name .car-number {
+.train-name .line-number {
   display: inline-block;
-  width: 1.4em;
   text-align: center;
-  border-radius: 0.7em;
-  background-color: #444;
+  border-radius: 0.3em;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 1px;
+  margin-right: 2px;
   color: white;
+}
+
+.train-name-text {
+  font-family: "Open Sans", sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  display: block;
+  margin-top: 2px;
 }
 
 .station-icon .fill {
@@ -82,14 +108,19 @@ body {
 }
 
 .coords-control {
-  font-family: var(--ui-font);
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
   font-size: 16px;
-  font-weight: 500;
-
   background-color: white;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
   border-radius: 4px;
   padding: 2px 4px;
+}
+
+.nofont {
+  vertical-align: text-top;
+  position: relative;
+  bottom: 3px;
 }
 
 .coords-control .icon {
@@ -141,7 +172,8 @@ body {
 }
 .leaflet-control-ctm label,
 .leaflet-control-layers label {
-  font-family: var(--ui-font);
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
   font-size: 14px;
 }
 .leaflet-control-layers input[type="radio"],
@@ -197,9 +229,10 @@ body {
 }
 .ctm-station-list .station,
 .ctm-train-list .train {
-  font-family: var(--ui-font);
+  font-family: "Open Sans", sans-serif;
   font-size: 14px;
   display: block;
+  font-weight: 700;
   border-radius: 2px;
   padding: 0 5px;
   margin-top: 2px;
