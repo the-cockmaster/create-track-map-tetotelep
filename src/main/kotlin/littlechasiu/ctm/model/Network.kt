@@ -131,8 +131,10 @@ data class CreateTrain(
   val cars: List<TrainCar>,
   val backwards: Boolean,
   val stopped: Boolean,
+  val category: String,
   val line: String,
   val color: String,
+  val terminus: String,
 )
 
 @Serializable
