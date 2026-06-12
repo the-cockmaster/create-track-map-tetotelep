@@ -17,6 +17,7 @@ import de.mrjulsen.crn.data.CarriageData
 import de.mrjulsen.crn.data.TrainInfo
 import de.mrjulsen.crn.data.TrainLine
 import de.mrjulsen.crn.data.navigation.ClientRoutePart
+import de.mrjulsen.crn.data.storage.GlobalSettings
 import de.mrjulsen.crn.data.train.PredictionTimes
 import de.mrjulsen.crn.data.train.ScheduleSection
 import de.mrjulsen.crn.data.train.TrainData
@@ -93,8 +94,8 @@ val Train.sendable
   get() =
     CreateTrain(
       id = id,
+      blacklisted = GlobalSettings.getInstance().isTrainBlacklisted(this),
       name = name.string,
-      owner = null,
       cars = carriages.map { it.sendable }.toList(),
       backwards = currentlyBackwards,
       stopped = speed == 0.0,
