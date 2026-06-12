@@ -22,6 +22,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import de.mrjulsen.crn.*
 import de.mrjulsen.crn.data.StationTag
+import de.mrjulsen.crn.data.storage.GlobalSettings
 
 class TrackWatcher() {
   var enable: Boolean = true
@@ -96,6 +97,7 @@ class TrackWatcher() {
       get() =
         Station(
           id = id,
+          blacklisted = GlobalSettings.getInstance().isStationBlacklisted(name),
           name = name,
           dimension = dimension,
           location = location.sendable,
@@ -207,7 +209,7 @@ class TrackWatcher() {
       Network(
         tracks = edges.map { it.sendable }.filterIsInstance<Edge>().toList(),
         portals = edges.map { it.sendable }.filterIsInstance<Portal>().toList(),
-        stations = stations.map { it.sendable }.toList(),
+        stations = stations.map { it.sendable }.toList().filter { !it.blacklisted },
       )
 
   val signalStatus
@@ -225,7 +227,7 @@ class TrackWatcher() {
   val trainStatus
     get() =
       TrainStatus(
-        trains = trains.map { it.sendable }.toList(),
+        trains = trains.map { it.sendable }.toList().filter { !it.blacklisted },
       )
 
   private suspend fun update() {

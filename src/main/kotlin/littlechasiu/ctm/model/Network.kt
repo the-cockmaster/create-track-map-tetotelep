@@ -62,6 +62,7 @@ data class Portal(
 data class Station(
   @Serializable(with = UUIDSerializer::class)
   val id: UUID,
+  val blacklisted: Boolean,
   val name: String,
   val dimension: String,
   val location: Point,
@@ -126,8 +127,8 @@ data class TrainCar(
 data class CreateTrain(
   @Serializable(with = UUIDSerializer::class)
   val id: UUID,
+  val blacklisted: Boolean,
   val name: String,
-  val owner: String?,
   val cars: List<TrainCar>,
   val backwards: Boolean,
   val stopped: Boolean,
