@@ -92,7 +92,7 @@ function startMapUpdates() {
         rotationAngle: stn.angle,
         pane: "stations",
       })
-        .bindTooltip(stn.name, {
+        .bindTooltip(`<span class="moveup">${stn.name}</span>`, {
           className: "station-name",
           direction: "top",
           offset: L.point(0, -12),
