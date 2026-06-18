@@ -68,6 +68,8 @@ data class Station(
   val location: Point,
   val angle: Double,
   val assembling: Boolean,
+  //@Serializable(with = UUIDSerializer::class)
+  val nexttrain: NextTrain?,
 )
 
 @Serializable
@@ -141,4 +143,12 @@ data class CreateTrain(
 @Serializable
 data class TrainStatus(
   val trains: List<CreateTrain>,
+)
+
+@Serializable
+data class NextTrain(
+  val line: String,
+  val color: String,
+  val terminus: String,
+  val timeUntilArrival: Int,
 )

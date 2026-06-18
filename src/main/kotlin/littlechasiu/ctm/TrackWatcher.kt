@@ -21,8 +21,12 @@ import kotlin.concurrent.thread
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import de.mrjulsen.crn.*
+import de.mrjulsen.crn.client.gui.widgets.StationDeparturesViewer
 import de.mrjulsen.crn.data.StationTag
 import de.mrjulsen.crn.data.storage.GlobalSettings
+import de.mrjulsen.crn.data.train.TrainUtils
+import de.mrjulsen.crn.data.train.portable.BasicTrainDisplayData
+import de.mrjulsen.crn.registry.ModAccessorTypes
 
 class TrackWatcher() {
   var enable: Boolean = true
@@ -86,6 +90,7 @@ class TrackWatcher() {
     private val location get() = internal.locationOn(edge)
     private val angle get() = internal.angleOn(edge)
     private val assembling get() = internal.assembling
+    private val nexttrains get() = TrainUtils.getDeparturesAtStationName(internal.name,null,false)
 
     override fun equals(other: Any?) =
       other != null && javaClass == other.javaClass &&
@@ -103,6 +108,7 @@ class TrackWatcher() {
           location = location.sendable,
           angle = angle,
           assembling = assembling,
+          nexttrain = if (nexttrains.isEmpty()) null else NextTrain(nexttrains.first().trainInfo.line?.lineName.orEmpty(), "#"+(BasicTrainDisplayData.of(nexttrains.first().trainId).color+16777216).toString(16).padStart(6,'0'), nexttrains.first().displayTitle, nexttrains.first().ticksUntilArrival/20)
         )
   }
 
