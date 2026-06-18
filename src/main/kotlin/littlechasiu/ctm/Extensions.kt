@@ -101,6 +101,6 @@ val Train.sendable
       stopped = speed == 0.0,
       category = TrainListener.getTrainData(this).orElse(TrainData.of(this)).currentSection.getTrainCategory().map { x -> x.categoryName }.orElse("nincs :("),
       line = TrainListener.getTrainData(this).orElse(TrainData.of(this)).currentSection.getTrainLine().map { x -> x.lineName }.orElse("nincs :("),
-      color = "#" + (BasicTrainDisplayData.of(id).color + 16777216).toString(16),
+      color = "#" + (BasicTrainDisplayData.of(id).color + 16777216).toString(16).padStart(6,'0'),
       terminus = TrainListener.getTrainData(this).orElse(TrainData.of(this)).currentSection.getDisplayText(),
     )
