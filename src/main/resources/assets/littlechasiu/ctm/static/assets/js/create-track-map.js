@@ -60,6 +60,10 @@ fetch("api/config.json")
     startMapUpdates()
   })
 
+let curSelected = "no selected train"
+let tempPopup = L.popup() // make this a map, where the train IDs link to the popup with the train
+let isOpen = false
+
 function startMapUpdates() {
   const dmgr = new DataManager()
 
@@ -99,6 +103,7 @@ function startMapUpdates() {
           opacity: 0.7,
         })
         .addTo(lmgr.layer(stn.dimension, "stations"))
+        .addEventListener("click", (e) => {map.panTo(xz(stn.location))})
     })
 
     portals.forEach((portal) => {
@@ -211,11 +216,13 @@ function startMapUpdates() {
           }
           */
           if(train.category == "Villamos"){
-            L.marker(head, {
+            if(!isOpen) {tempPopup = L.popup(head, {className: "train-name", offset: L.point(0,-12)}).setContent(`<span class="line-number" style="background-color:${train.color}">${train.line}</span> <span class="nofont">▶</span> <span class="moveup">${train.terminus}</span> <br><span class="train-name-text">${train.name}</span>`); isOpen = true}
+            let tempMarker = L.marker(head, {
               icon: tramIcon,
               rotationAngle: 0,
               pane: "trains",
-            }).bindTooltip(`<span class="line-number" style="background-color:${train.color}">${train.line}</span> <span class="nofont">▶</span> <span class="moveup">${train.terminus}</span> <br><span class="train-name-text">${train.name}</span>`, {className: "train-name", direction: "top", offset: L.point(0,-12)}).addTo(lmgr.layer(dim, "trains"))
+            })
+            tempMarker.addTo(lmgr.layer(dim, "trains")).addEventListener("click", (e) => {isOpen = true; curSelected = train.id; tempPopup.setLatLng(head).openOn(map), map.panTo(head)})
           } else if(train.category == "Metró") {
             L.marker(head, {
               icon: metroIcon,
@@ -234,6 +241,11 @@ function startMapUpdates() {
               rotationAngle: 0,
               pane: "trains",
             }).bindTooltip(`<span class="moveup">${train.name}</span> <br><span class="train-name-text">A jármű nem teljesít menetrendi menetet</span>`, {className: "train-name", direction: "top", offset: L.point(0,-12)}).addTo(lmgr.layer(dim, "trains"))
+          }
+          if(train.id == curSelected){
+            tempPopup.setLatLng(head)
+            map.on('popupclose', function(e) {curSelected = "no selected train"; isOpen = false})
+            map.panTo(head)
           }
         }
       })
