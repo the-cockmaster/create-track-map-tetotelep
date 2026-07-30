@@ -91,19 +91,35 @@ function startMapUpdates() {
     })
 
     stations.forEach((stn) => {
-      L.marker(xz(stn.location), {
-        icon: stationIcon("#5E6167"),
-        rotationAngle: stn.angle,
-        pane: "stations",
-      })
-        .bindTooltip(`<span class="moveup">${stn.name}</span>`, {
-          className: "station-name",
-          direction: "top",
-          offset: L.point(0, -12),
-          opacity: 0.7,
-        })
-        .addTo(lmgr.layer(stn.dimension, "stations"))
-        .addEventListener("click", (e) => {map.panTo(xz(stn.location))})
+      if(stn.nexttrain === null){
+          L.marker(xz(stn.location), {
+            icon: stationIcon("#5E6167"),
+            rotationAngle: stn.angle,
+            pane: "stations",
+          })
+            .bindTooltip(`<span class="train-name-text">${stn.name}</span>`, {
+              className: "station-name",
+              direction: "top",
+              offset: L.point(0, -12),
+              opacity: 0.7,
+            })
+            .addTo(lmgr.layer(stn.dimension, "stations"))
+            .addEventListener("click", (e) => {map.panTo(xz(stn.location))})
+      } else {
+          L.marker(xz(stn.location), {
+            icon: stationIcon(stn.nexttrain.color),
+            rotationAngle: stn.angle,
+            pane: "stations",
+          })
+            .bindTooltip(`<span class="train-name-text">${stn.name}</span> <br><span class="line-number" style="background-color:${stn.nexttrain.color}">${stn.nexttrain.line}</span> <span class="nofont">▶</span> <span class="moveup">${stn.nexttrain.terminus}</span> <span class="moveup">${stn.nexttrain.timeUntilArrival}</span>`, {
+              className: "station-name",
+              direction: "top",
+              offset: L.point(0, -12),
+              opacity: 0.7,
+            })
+            .addTo(lmgr.layer(stn.dimension, "stations"))
+            .addEventListener("click", (e) => {map.panTo(xz(stn.location))})
+      }
     })
 
     portals.forEach((portal) => {
