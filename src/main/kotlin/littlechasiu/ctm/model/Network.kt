@@ -64,6 +64,8 @@ data class Station(
   val id: UUID,
   val blacklisted: Boolean,
   val name: String,
+  val group: String,
+  val platform: String,
   val dimension: String,
   val location: Point,
   val angle: Double,

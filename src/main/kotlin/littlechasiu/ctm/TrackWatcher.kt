@@ -104,6 +104,8 @@ class TrackWatcher() {
           id = id,
           blacklisted = GlobalSettings.getInstance().isStationBlacklisted(name),
           name = name,
+          group = GlobalSettings.getInstance().getOrCreateStationTagFor(name).tagName.toString(),
+          platform = GlobalSettings.getInstance().getOrCreateStationTagFor(name).getInfoForStation(name).platform,
           dimension = dimension,
           location = location.sendable,
           angle = angle,
